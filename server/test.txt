@@ -1,0 +1,2 @@
+git config --global user.email "edgar.kollamaa@vikk.ee"
+git config --global user.name "Edgar Kollamaa"
