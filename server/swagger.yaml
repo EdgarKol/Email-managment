@@ -2,3 +2,162 @@ openapi: 3.0.2
 info:
   title: Email-managment
   version: 1.0.0
+paths:
+  /e-mails:
+    get:
+      parameters:
+        - examples:
+            session:
+              value: "49"
+          name: bearerAuth
+          description: sessionId
+          schema:
+            type: integer
+          in: header
+          required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Emails"
+              examples:
+                emails:
+                  value:
+                    - id: 46
+                      name: some text
+                      email: some text
+                      content: some text
+                    - id: 52
+                      name: some text
+                      email: some text
+                      content: some text
+          description: returns list on emails
+        "401":
+          headers:
+            sessionId:
+              schema:
+                type: integer
+              examples:
+                sessionID:
+                  value: "98"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                error:
+                  value:
+                    error: You need to login
+          description: Unouthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                error:
+                  value: forbidden request
+          description: something went wrong
+      security:
+        - bearerAuth: []
+      description: get emails
+  /sessions:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/postSessions"
+            examples:
+              post sessions:
+                value:
+                  username: some text
+                  password: some text
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/postSessionsResponse"
+              examples:
+                response:
+                  value:
+                    sessionId: 22
+                    success: true
+          description: created
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                error:
+                  value:
+                    error: unouthorized
+          description: Unauthorized
+components:
+  schemas:
+    postSessions:
+      title: Root Type for postSessions
+      description: post sessions
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      example:
+        username: username
+        password: password
+    postSessionsResponse:
+      title: Root Type for postSessionsResponse
+      description: get sessions
+      type: object
+      properties:
+        sessionId:
+          format: int32
+          type: integer
+        success:
+          type: boolean
+      example:
+        sessionId: 77169636
+        success: true
+    error:
+      title: Root Type for error
+      description: error message
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: unouthorized
+    Emails:
+      title: Root Type for getEmails
+      description: get emails
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        content:
+          type: string
+      example:
+        id: 1
+        name: John
+        email: john@example.com
+        content: "Hello, world!"
+  responses:
+    e-mails:
+      description: get emails
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http
