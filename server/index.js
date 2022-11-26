@@ -41,7 +41,7 @@ app.get("/e-mails", (req, res) => {
     res.status(401).send({ error: "you must be logged in" });
   } else {
     try {
-      let obj = sessions.find((s) => s.id == auth);
+      let obj = sessions.find((s) => session.id == auth);
       if (!obj) {
         return res.status(403).send({ error: "Unauthorized" });
       } else {
@@ -96,6 +96,34 @@ app.post("/e-mail", (req, res) => {
   }
 });
 
+app.delete("/e-mails/:id", (req, res) => {
+  let auth = req.headers.authorization;
+  if (!auth) {
+    return res.status(401).send({ error: "you must be logged in" });
+  } else {
+    try {
+      let obj = sessions.find((session = session.id == auth));
+
+      if (!obj) {
+        return res.status(403).send({ error: "user not found" });
+      } else {
+        if (!emails[req.params.id - 1]) {
+          return res.status(404).send({ error: "email not found" });
+        }
+        emails.splice(req.params.id - 1, 1);
+
+        for (let i = 0; i < emails.length; i++) {
+          emails[i].id = i + 1;
+        }
+        return res.status(201).send({ success: true });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(401).send({ error: "session not found" });
+    }
+  }
+});
+
 app.post("/sessions", (req, res) => {
   if (!req.body.username || !req.body.password) {
     return res.status(400).send({ error: "One or more parameters missing" });
@@ -107,9 +135,6 @@ app.post("/sessions", (req, res) => {
         element.password == req.body.password
       ) {
         userMatched += 1;
-        if (element.isAdmin == true) {
-          checkAdmin = true;
-        }
         sessionId = Math.round(Math.random() * 100000000);
         session = {
           id: sessionId,
