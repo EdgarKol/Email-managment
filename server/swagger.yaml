@@ -64,6 +64,75 @@ paths:
       security:
         - bearerAuth: []
       description: get emails
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/postEmail"
+            examples:
+              postEmail:
+                value:
+                  id: 68
+                  name: some text
+                  email: some text
+                  content: some text
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/postEmail"
+              examples:
+                postEmail:
+                  value:
+                    id: 81
+                    name: some text
+                    email: some text
+                    content: some text
+          description: created
+      security:
+        - bearerAuth: []
+      description: post emails
+    delete:
+      parameters:
+        - name: bearerAuth
+          description: delete email
+          schema: {}
+          in: header
+          required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                success:
+                  value: "success: true"
+          description: "success: true"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                Unauthorized:
+                  value:
+                    error: some text
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                Not found:
+                  value:
+                    error: some text
+          description: no email found
+      security:
+        - bearerAuth: []
+      description: delete email
   /sessions:
     post:
       requestBody:
@@ -154,6 +223,25 @@ components:
         name: John
         email: john@example.com
         content: "Hello, world!"
+    postEmail:
+      title: Root Type for postEmail
+      description: post e-mail
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        content:
+          type: string
+      example:
+        id: 2
+        name: Mihkel
+        email: mihkel@example.com
+        content: tere mis toimub
   responses:
     e-mails:
       description: get emails
