@@ -41,7 +41,7 @@ app.get("/e-mails", (req, res) => {
     res.status(401).send({ error: "you must be logged in" });
   } else {
     try {
-      let obj = sessions.find((s) => session.id == auth);
+      let obj = sessions.find((session) => session.id == auth);
       if (!obj) {
         return res.status(403).send({ error: "Unauthorized" });
       } else {
@@ -67,7 +67,7 @@ app.post("/e-mail", (req, res) => {
     return res.status(401).send({ error: "Missing authorization header" });
   } else {
     try {
-      let obj = sessions.find((o) => o.id == auth);
+      let obj = sessions.find((session) => session.id == auth);
 
       if (!obj.users) {
         return res.status(403).send({ error: "Unauthorized" });
@@ -102,7 +102,7 @@ app.delete("/e-mails/:id", (req, res) => {
     return res.status(401).send({ error: "you must be logged in" });
   } else {
     try {
-      let obj = sessions.find((session = session.id == auth));
+      let obj = sessions.find((session) => session.id == auth);
 
       if (!obj) {
         return res.status(403).send({ error: "user not found" });
